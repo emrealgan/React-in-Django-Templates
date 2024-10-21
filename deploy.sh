@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /home/ubuntu/pera_marin || exit
+cd /home/ubuntu/React-in-Django-Templates || exit
 git pull origin main
 
 # Create a new virtual environment

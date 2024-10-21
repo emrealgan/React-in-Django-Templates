@@ -6,8 +6,8 @@ After=network.target
 [Service]
 User=ubuntu
 Group=www-data
-WorkingDirectory=/home/ubuntu/pera_marin
-ExecStart=/home/ubuntu/pera_marin/venv/bin/gunicorn \
+WorkingDirectory=/home/ubuntu/React-in-Django-Templates
+ExecStart=/home/ubuntu/React-in-Django-Templates/venv/bin/gunicorn \
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/gunicorn.sock \

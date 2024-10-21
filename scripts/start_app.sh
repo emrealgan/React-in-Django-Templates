@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-PROJECT_MAIN_DIR_NAME="pera_marin"
+PROJECT_MAIN_DIR_NAME="React-in-Django-Templates"
 
 # Validate variables
 if [ -z "$PROJECT_MAIN_DIR_NAME" ]; then
