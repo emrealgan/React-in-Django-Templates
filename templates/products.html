@@ -1,0 +1,184 @@
+{% extends "base.html" %} 
+{% block title %} Pera Marin {% endblock %} 
+{% block desc %} Pera Marine Electricals Products {% endblock %} 
+
+{% block content %}
+<div id="products" class="w-full h-full"></div>
+
+<script id="products-data" type="application/json">
+  {{ products_json|safe }}
+</script>
+
+<script type="text/babel">
+  function SearchBar({ onSearch }) {
+    const [searchTerm, setSearchTerm] = React.useState("");
+
+    const handleInputChange = (e) => {
+      setSearchTerm(e.target.value);
+      onSearch(e.target.value); // Trigger the search callback
+    };
+
+    return (
+      <div className="w-full my-6 px-8">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleInputChange}
+          placeholder="Search by name, brand, or code..."
+          className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
+        />
+      </div>
+    );
+  }
+
+  function Products() {
+    const [products, setProducts] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
+    const [filteredProducts, setFilteredProducts] = React.useState([]);
+    const [currentImageIndex, setCurrentImageIndex] = React.useState({});
+    const [hoveredProductCode, setHoveredProductCode] = React.useState(null);
+    const [isMobile, setIsMobile] = React.useState(false);
+
+    // Detect mobile devices
+    React.useEffect(() => {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      if (/android|iPad|iPhone|iPod/.test(userAgent.toLowerCase())) {
+        setIsMobile(true);
+      }
+    }, []);
+
+    React.useEffect(() => {
+      const productsElement = document.getElementById("products-data");
+      const productsData = JSON.parse(productsElement.textContent);
+      setProducts(productsData);
+      setFilteredProducts(productsData);
+      setLoading(false);
+    }, []);
+
+    React.useEffect(() => {
+      let interval;
+
+      // For desktop, switch images on hover; for mobile, automatically switch images
+      if (hoveredProductCode || isMobile) {
+        const productCodes = isMobile ? products.map(p => p.code) : [hoveredProductCode];
+        
+        interval = setInterval(() => {
+          productCodes.forEach((code) => {
+            const currentProduct = products.find((product) => product.code === code);
+            const imageCount = currentProduct?.images.length || 0;
+
+            setCurrentImageIndex((prev) => {
+              const currentIndex = prev[code] || 0;
+              if (currentIndex < imageCount - 1) {
+                const nextIndex = currentIndex + 1;
+                return {
+                  ...prev,
+                  [code]: nextIndex,
+                };
+              } else {
+                return {
+                  ...prev,
+                  [code]: 0, // Reset to first image
+                };
+              }
+            });
+          });
+        }, 2000); // Change image every 2 seconds
+      }
+
+      return () => {
+        clearInterval(interval);
+      };
+    }, [hoveredProductCode, isMobile, products]);
+
+    const handleMouseEnter = (code) => {
+      const currentProduct = products.find((product) => product.code === code);
+      
+      // Eğer ürün sadece tek resme sahipse, hover durumunda resim değiştirme
+      if (currentProduct?.images && currentProduct.images.length > 1) {
+        setHoveredProductCode(code);
+        // İkinci resimden başla
+        setCurrentImageIndex((prev) => ({
+          ...prev,
+          [code]: 1,
+        }));
+      }
+    };
+    
+    const handleMouseLeave = (code) => {
+      setHoveredProductCode(null);
+      setCurrentImageIndex((prev) => ({
+        ...prev,
+        [code]: 0, // Go back to the first image when hover ends
+      }));
+    };
+
+    const handleSearch = (query) => {
+      if (query) {
+        const filtered = products.filter(
+          (product) =>
+            product.name.toLowerCase().includes(query.toLowerCase()) ||
+            product.brand.toLowerCase().includes(query.toLowerCase()) ||
+            product.code.toLowerCase().includes(query.toLowerCase())
+        );
+        setFilteredProducts(filtered);
+      } else {
+        setFilteredProducts(products);
+      }
+    };
+
+    if (loading)
+      return (
+        <div className="h-full w-full flex items-center justify-center text-6xl text-gray-500">
+          <p>◌</p>
+        </div>
+      );
+
+    return (
+      <main className="relative w-full h-screen pt-12 md:pt-20 overflow-auto md:text-lg px-8">
+        <SearchBar onSearch={handleSearch} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {filteredProducts.map((product) => (
+            <a
+              key={product.code}
+              className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl"
+              onMouseEnter={() => handleMouseEnter(product.code)}
+              onMouseLeave={() => handleMouseLeave(product.code)}
+              href={`/${product.code}`}
+            >
+              <div className="relative flex items-center justify-center h-60 w-full border-b-4 border-gray-200 bg-gray-100 group">
+                {product?.images && product.images.length > 0 ? (
+                  product.images.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image.image}
+                      alt={product.name}
+                      className={`absolute inset-0 object-contain h-full w-full transition-opacity duration-500 ease-in-out ${
+                        index === (currentImageIndex[product.code] || 0)
+                          ? "opacity-100 z-10"
+                          : "opacity-0 z-0"
+                      }`}
+                    />
+                  ))
+                ) : (
+                  <p>No image available</p>
+                )}
+              </div>
+              <div className="p-4">
+                <h2 className="text-2xl font-semibold mb-2 text-gray-600">
+                  {product?.name}
+                </h2>
+                <p className="text-gray-500 mb-2">{product?.brand}</p>
+                <p className="text-gray-500">{product?.code}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </main>
+    );
+  }
+
+  ReactDOM.render(<Products />, document.getElementById("products"));
+</script>
+
+{% endblock %}

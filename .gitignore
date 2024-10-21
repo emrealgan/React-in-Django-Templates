@@ -1,0 +1,19 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Django migrations
+*/migrations/__pycache__/
+*/migrations/*.py
+
+# Virtual environment
+env/
+
+# IDE files
+.idea/
+
+# Log files
+*.log
+
+# Environment variables
+*.env

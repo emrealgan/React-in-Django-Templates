@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block desc %}{{ product.brand }} -- {{ product.name }} -- {{ product.code }}{% endblock %}
+{% block content %}
+  <div id="detail" class="w-full h-full"></div>
+
+  <script id="product-data" type="application/json">
+    {{ product_json|safe }}
+  </script>
+  
+  <script type="text/babel">
+    function Detail() {
+      const [product, setProduct] = React.useState(null);
+
+      React.useEffect(() => {
+        const productElement = document.getElementById('product-data');
+        const productData = JSON.parse(productElement.textContent);
+        setProduct(productData);
+      }, []);
+
+      if (!product) {
+        return <div className="flex justify-center items-center h-full text-lg">Loading...</div>;
+      }
+
+      return (
+        <main className="relative w-full h-screen pt-12 md:pt-20 overflow-hidden flex flex-col items-center">
+          <div className="container mx-auto p-4 md:p-12">
+            {/* Product Information */}
+            <div className="text-center mb-10">
+              <h1 className="text-4xl font-bold text-gray-800 mb-4">{product.name}</h1>
+              <p className="text-xl text-gray-600">{product.brand}</p>
+              <p className="text-md text-gray-500">{product.code}</p>
+            </div>
+      
+            {/* Image Gallery */}
+            <div className="w-full flex justify-center">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 max-w-screen-lg">
+                {product.images.map((image) => (
+                  <div key={image.id} className="p-2 w-full">
+                    <img
+                      src={image.image}
+                      alt={`Product Image ${image.id}`}
+                      className="w-full h-full object-cover rounded-lg shadow-lg"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </main>
+      );
+           
+    }
+
+    ReactDOM.render(<Detail />, document.getElementById("detail"));
+  </script>
+{% endblock %}

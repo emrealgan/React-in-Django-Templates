@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="{% block desc %}{%endblock%}">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="/media/favicon.png" rel="icon" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+  </head>
+  <body class="w-full h-full">
+    <div id="root" class="w-full h-full"></div>
+
+    <script type="text/babel">
+      function Navbar() {
+        const [isOpen, setIsOpen] = React.useState(false);
+        const path = window.location.pathname;
+
+        const items = [
+          {
+            name: "Our Products",
+            href: "/products",
+            target: "_self",
+          },
+          {
+            name: "Contact",
+            href: "https://wa.me/905372779962",
+            target: "_blank",
+          },
+          {
+            name: "info@peramarin.com",
+            href: "mailto:info@peramarin.com",
+            target: "_blank",
+          },
+        ];
+
+        return (
+          <nav className="w-full h-12 md:h-20 fixed bg-white shadow-md z-10 italic">
+            <div className="flex items-center justify-between h-full px-4 md:pr-24 overflow-hidden">
+              <a
+                className="flex items-center justify-center h-full sm:w-[16%] lg:w-[12%] p-2"
+                href="/"
+              >
+                <img className="h-16 w-32" src="/media/pera.jpg" alt="Logo" />
+              </a>
+
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="md:hidden block text-gray-500 focus:outline-none"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d={
+                      isOpen
+                        ? "M6 18L18 6M6 6l12 12"
+                        : "M4 6h16M4 12h16M4 18h16"
+                    }
+                  />
+                </svg>
+              </button>
+
+              <div className="hidden md:flex flex-grow justify-evenly xl:px-32">
+                {items.map((item) => (
+                  <a
+                    key={item.href}
+                    className="sm:text-base lg:text-lg text-gray-500 hover:text-gray-900"
+                    href={item.href}
+                    target={item.target}
+                  >
+                    {item.name}
+                  </a>
+                ))}
+              </div>
+
+              {/* Mobile menu */}
+              {isOpen && (
+                <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg">
+                  {items.map((item) => (
+                    <a
+                      key={item.href}
+                      className="block px-4 py-2 text-lg text-gray-500 hover:text-gray-900"
+                      href={item.href}
+                      target={item.target}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.name}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </nav>
+        );
+      }
+
+      ReactDOM.render(<Navbar />, document.getElementById("root"));
+    </script>
+    {% block content %}{% endblock %}
+  </body>
+</html>
