@@ -17,3 +17,5 @@ env/
 
 # Environment variables
 *.env
+
+static/
