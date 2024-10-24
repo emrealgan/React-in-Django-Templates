@@ -5,8 +5,9 @@ from .settings import DEBUG
 from django.contrib.sitemaps.views import sitemap  # Sitemap için import
 from .sitemaps import ProductSitemap  # Sitemap sınıfınızı ekleyin
 from products.views import product_detail, products
-from .views import home
+from .views import home, robots_txt
 from django.conf import settings
+
 
 sitemaps = {
     "products": ProductSitemap,
@@ -17,6 +18,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("products/", products, name="product_list"),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
+    path('robots.txt', robots_txt),
     path("<slug:code>/", product_detail, name="product_detail"),
 ]
 if DEBUG:
