@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
 from .settings import DEBUG
-from django.contrib.sitemaps.views import sitemap  # Sitemap için import
-from .sitemaps import ProductSitemap  # Sitemap sınıfınızı ekleyin
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import ProductSitemap
 from products.views import product_detail, products
 from .views import home, robots_txt
 from django.conf import settings
