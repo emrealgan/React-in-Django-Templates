@@ -7,10 +7,9 @@ class Product(models.Model):
     brand = models.CharField(max_length=32)
     code = models.CharField(max_length=32, unique=True)
     isActive = models.BooleanField(default=True)
-    updated_at = models.DateTimeField(auto_now=True)  # Son güncelleme zamanı
+    updated_at = models.DateTimeField(auto_now=True) 
 
     def save(self, *args, **kwargs):
-        # Alanları düzenle ve büyük/küçük harfe uygun şekilde kaydet
         self.name = self.name.upper()
         self.brand = self.brand.upper()
         self.code = self.code.lower()
@@ -20,7 +19,6 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        # Her ürünün detay sayfasının URL'sini döndür
         return reverse("product_detail", args=[self.code])
 
     class Meta:
@@ -34,7 +32,7 @@ class ProductImage(models.Model):
     )
     image = models.ImageField(
         upload_to="products/"
-    )  # Resimler "products" klasörüne kaydedilecek
+    )
 
     def __str__(self):
         return f"{self.product.name} - {self.id}"
