@@ -13,7 +13,7 @@ SECRET_KEY = 'django-insecure-qsiuh2uwo!e(9w&fd#p6ha1@gjo8%5030!^--ss741baq^4!=^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['peramarin.com', 'www.peramarin.com']
 
 
 # Application definition
